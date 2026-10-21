@@ -1,0 +1,13 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.futurenostalgia.memeapp",
+      "sha256_cert_fingerprints": [
+        "FC:E8:D6:00:69:58:9D:B2:02:B4:B1:AB:7D:4F:71:42:D3:1C:D2:5D:38:AA:7E:14:64:56:23:8E:EB:3D:DF:A8",
+        "4E:B1:1F:5C:FD:69:FD:01:4F:F2:93:AB:C3:0D:D1:2F:13:2F:77:C6:0F:87:6C:B6:51:7B:B7:63:CC:F9:A3:A1"
+      ]
+    }
+  }
+]

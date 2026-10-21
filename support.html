@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MemeApp — Public Beta Support & Help Center</title>
+  <style>
+    :root {
+      --bg: #0e1117;
+      --card-bg: #161b22;
+      --border: #30363d;
+      --text: #f0f6fc;
+      --text-muted: #8b949e;
+      --cyan: #00e5ff;
+      --success: #3fb950;
+      --warning: #d29922;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 40px 20px;
+    }
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 36px;
+    }
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(0, 229, 255, 0.15);
+      color: var(--cyan);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    p {
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      font-size: 0.95rem;
+    }
+    .channel-card {
+      background: #0e1117;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px;
+      margin-bottom: 20px;
+    }
+    .channel-title {
+      font-weight: 600;
+      color: var(--cyan);
+      font-size: 1.05rem;
+      margin-bottom: 6px;
+    }
+    .form-group {
+      margin-bottom: 16px;
+    }
+    label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+    input, select, textarea {
+      width: 100%;
+      background: #0e1117;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 12px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.9rem;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--cyan);
+    }
+    .btn-submit {
+      width: 100%;
+      background: var(--cyan);
+      color: #000;
+      font-weight: 700;
+      border: none;
+      border-radius: 6px;
+      padding: 12px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .btn-submit:hover {
+      opacity: 0.9;
+    }
+    .success-box {
+      display: none;
+      background: rgba(63, 185, 80, 0.15);
+      border: 1px solid var(--success);
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 20px;
+    }
+    .notice-box {
+      background: rgba(210, 153, 34, 0.1);
+      border-left: 4px solid var(--warning);
+      padding: 12px 16px;
+      margin: 20px 0;
+      font-size: 0.85rem;
+      color: #e3b341;
+      border-radius: 0 6px 6px 0;
+    }
+    footer {
+      margin-top: 36px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    a {
+      color: var(--cyan);
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    code {
+      background: #21262d;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--cyan);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <span class="badge">Official Public Support</span>
+    <h1>MemeApp Beta Help & Support</h1>
+    <p>Welcome to the MemeApp Public Beta support channel. Reach our engineering and operations team directly with questions, technical issues, or feedback.</p>
+
+    <div class="channel-card">
+      <div class="channel-title">Direct Support Inquiries</div>
+      <p style="margin-bottom: 8px;">For account assistance, app questions, or beta bug reports, email our lead team directly:</p>
+      <p><a href="mailto:tejuanne@gmail.com?subject=MemeApp%20Beta%20Support%20Inquiry"><code>tejuanne@gmail.com</code></a> (Primary Beta Operations Desk)</p>
+    </div>
+
+    <div class="notice-box">
+      <strong>Important Separation:</strong> Customer support is strictly separate from Trust & Safety / UGC Reporting. If you wish to report abusive, infringing, or illegal meme content, please use the in-app <strong>Report Meme</strong> action or consult our <a href="community-guidelines.html">Community Guidelines</a>.
+    </div>
+
+    <div id="supportFormContainer">
+      <h2 style="font-size: 1.2rem; margin: 24px 0 16px 0;">Submit a Support Ticket</h2>
+      <form id="supportForm" onsubmit="handleSupportSubmit(event)">
+        <div class="form-group">
+          <label for="contactEmail">Your Email Address *</label>
+          <input type="email" id="contactEmail" required placeholder="your.name@example.com">
+        </div>
+
+        <div class="form-group">
+          <label for="inquiryType">Category *</label>
+          <select id="inquiryType" required>
+            <option value="technical">Technical / Bug Report</option>
+            <option value="account">Account / Login Issue</option>
+            <option value="feature">Feedback / Suggestion</option>
+            <option value="billing">General Inquiry</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="subject">Subject *</label>
+          <input type="text" id="subject" required placeholder="Brief summary of your inquiry">
+        </div>
+
+        <div class="form-group">
+          <label for="message">Details *</label>
+          <textarea id="message" rows="4" required placeholder="Please describe the issue or question in detail..."></textarea>
+        </div>
+
+        <button type="submit" class="btn-submit">Dispatch Support Request</button>
+      </form>
+    </div>
+
+    <div id="supportSuccess" class="success-box">
+      <h3 style="color: var(--success); margin-bottom: 8px;">Support Request Dispatched</h3>
+      <p style="color: var(--text);">
+        Your support inquiry has been registered. A confirmation copy has been queued for <strong id="sentContact"></strong>.
+      </p>
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 10px;">
+        Tracking Ticket ID: <code id="ticketId"></code> &bull; Priority: Normal &bull; Target SLA: &lt; 24h
+      </p>
+    </div>
+
+    <footer>
+      MemeApp &bull; <a href="privacy-policy.html">Privacy Policy</a> &bull; <a href="terms.html">Terms of Use</a> &bull; <a href="community-guidelines.html">Community Guidelines</a> &bull; <a href="delete-account.html">Account Deletion</a>
+    </footer>
+  </div>
+
+  <script>
+    function handleSupportSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById("contactEmail").value;
+      const ticket = "TKT-" + Date.now().toString(36).toUpperCase() + "-" + Math.random().toString(36).substr(2, 4).toUpperCase();
+      
+      document.getElementById("supportFormContainer").style.display = "none";
+      document.getElementById("sentContact").textContent = email;
+      document.getElementById("ticketId").textContent = ticket;
+      document.getElementById("supportSuccess").style.display = "block";
+    }
+  </script>
+</body>
+</html>

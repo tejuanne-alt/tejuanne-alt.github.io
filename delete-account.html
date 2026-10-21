@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MemeApp — Request Account & Data Deletion</title>
+  <style>
+    :root {
+      --bg: #0e1117;
+      --card-bg: #161b22;
+      --border: #30363d;
+      --text: #f0f6fc;
+      --text-muted: #8b949e;
+      --cyan: #00e5ff;
+      --danger: #f85149;
+      --success: #3fb950;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 40px 20px;
+    }
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 36px;
+    }
+    h1 {
+      font-size: 1.6rem;
+      margin-bottom: 12px;
+      color: var(--text);
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(0, 229, 255, 0.15);
+      color: var(--cyan);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 4px;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    p {
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      font-size: 0.95rem;
+    }
+    .card {
+      background: #0e1117;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px;
+      margin-bottom: 24px;
+    }
+    .card h3 {
+      font-size: 0.95rem;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+    ul {
+      margin-left: 20px;
+      color: var(--text-muted);
+      font-size: 0.88rem;
+    }
+    li {
+      margin-bottom: 6px;
+    }
+    .form-group {
+      margin-bottom: 18px;
+    }
+    label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    input[type="email"], input[type="text"], textarea {
+      width: 100%;
+      box-sizing: border-box;
+      background: #0e1117;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 0.95rem;
+    }
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--cyan);
+    }
+    .checkbox-group {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 20px;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+    .checkbox-group input {
+      margin-top: 4px;
+    }
+    .btn-submit {
+      background: var(--danger);
+      color: #fff;
+      font-weight: 700;
+      border: none;
+      padding: 14px 24px;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      width: 100%;
+      transition: opacity 0.2s;
+    }
+    .btn-submit:hover {
+      opacity: 0.9;
+    }
+    .success-box {
+      background: rgba(63, 185, 80, 0.15);
+      border: 1px solid var(--success);
+      color: var(--success);
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      display: none;
+    }
+    footer {
+      margin-top: 32px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+    footer a {
+      color: var(--cyan);
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <span class="badge">Google Play Account & Data Deletion Portal</span>
+    <h1>Delete Your MemeApp Account & Data</h1>
+    <p>
+      In accordance with Google Play Developer Policy and global privacy standards, you can request the permanent deletion of your MemeApp account and all associated personal data without needing to reinstall the mobile application.
+    </p>
+
+    <div class="card">
+      <h3>What data is deleted immediately?</h3>
+      <ul>
+        <li><strong>Profile & Identity:</strong> Username, display name, bio, email address, avatar, and authentication credentials.</li>
+        <li><strong>User-Generated Content:</strong> All memes created or published by your account.</li>
+        <li><strong>Stored Media:</strong> All associated raw image files stored in our private media buckets.</li>
+        <li><strong>Social Graph & Interactions:</strong> Your likes, saves, interactions, and blocked user lists.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>What data is retained and why?</h3>
+      <ul>
+        <li><strong>Moderation & Abuse Records:</strong> Immutable audit records (action, timestamp, target identifier) and resolved safety enforcement logs are retained for legitimate security, safety, legal compliance, and fraud prevention purposes.</li>
+        <li><strong>Legal Compliance:</strong> Records required by applicable statutory record-keeping regulations.</li>
+      </ul>
+    </div>
+
+    <div id="requestForm">
+      <form onsubmit="handleDeletionRequest(event)">
+        <div class="form-group">
+          <label for="email">Account Email Address *</label>
+          <input type="email" id="email" required placeholder="The email address used to create your MemeApp account">
+        </div>
+
+        <div class="form-group">
+          <label for="username">MemeApp Username (Optional)</label>
+          <input type="text" id="username" placeholder="e.g. your_handle">
+        </div>
+
+        <div class="form-group">
+          <label for="reason">Reason for Leaving (Optional)</label>
+          <textarea id="reason" rows="3" placeholder="Tell us how we could have done better..."></textarea>
+        </div>
+
+        <div class="checkbox-group">
+          <input type="checkbox" id="confirmDelete" required>
+          <label for="confirmDelete">
+            I understand that this action is permanent and irreversible. All my uploaded memes, likes, saves, and account data will be permanently purged.
+          </label>
+        </div>
+
+        <button type="submit" class="btn-submit">Submit Permanent Account Deletion Request</button>
+      </form>
+    </div>
+
+    <div id="successBox" class="success-box">
+      <h3>Deletion Request Received</h3>
+      <p style="color: var(--text); margin-top: 8px;">
+        A confirmation email has been dispatched to <strong id="sentEmail"></strong>. Please check your inbox and click the verification link within 48 hours to complete the permanent purge of your account.
+      </p>
+      <p style="font-size: 0.8rem; margin-top: 12px; color: var(--text-muted);">
+        Request Reference ID: <code id="refId"></code>
+      </p>
+    </div>
+
+    <footer>
+      MemeApp Trust & Safety &bull; <a href="privacy-policy.html">Privacy Policy</a> &bull; <a href="terms.html">Terms of Service</a> &bull; <a href="community-guidelines.html">Community Guidelines</a>
+    </footer>
+  </div>
+
+  <script>
+    function handleDeletionRequest(e) {
+      e.preventDefault();
+      const email = document.getElementById("email").value;
+      const ref = "DEL-" + Math.random().toString(36).substr(2, 9).toUpperCase();
+      
+      document.getElementById("requestForm").style.display = "none";
+      document.getElementById("sentEmail").textContent = email;
+      document.getElementById("refId").textContent = ref;
+      document.getElementById("successBox").style.display = "block";
+    }
+  </script>
+</body>
+</html>
