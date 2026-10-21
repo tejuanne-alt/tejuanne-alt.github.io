@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="pageTitle">MemeApp — Future Internet Nostalgia</title>
+  <meta name="description" content="MemeApp: The curated home for Future Internet Nostalgia.">
+  <style>
+    :root {
+      --bg: #090b10;
+      --card-bg: #12161f;
+      --border: #242c3d;
+      --cyan: #00e5ff;
+      --cyan-glow: rgba(0, 229, 255, 0.2);
+      --error: #ff5252;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      margin: 0;
+      padding: 24px 16px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 94vh;
+    }
+    .container {
+      max-width: 540px;
+      width: 100%;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7);
+    }
+    .badge {
+      display: inline-block;
+      font-family: monospace;
+      font-size: 0.75rem;
+      background: rgba(0, 229, 255, 0.12);
+      color: var(--cyan);
+      border: 1px solid rgba(0, 229, 255, 0.25);
+      padding: 4px 10px;
+      border-radius: 4px;
+      letter-spacing: 0.08em;
+      margin-bottom: 16px;
+    }
+    .badge-error {
+      background: rgba(255, 82, 82, 0.12);
+      color: var(--error);
+      border-color: rgba(255, 82, 82, 0.3);
+    }
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .creator-tag {
+      font-weight: 700;
+      color: var(--cyan);
+      font-size: 1.05rem;
+    }
+    .meme-image-container {
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #000;
+      border: 1px solid var(--border);
+      margin-bottom: 18px;
+      position: relative;
+    }
+    .meme-image {
+      width: 100%;
+      height: auto;
+      max-height: 480px;
+      object-fit: cover;
+      display: block;
+    }
+    .caption-text {
+      font-size: 1.15rem;
+      font-weight: 500;
+      margin-bottom: 16px;
+      color: #fff;
+    }
+    .tags-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+    .tag-pill {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .btn {
+      display: block;
+      text-align: center;
+      padding: 13px 20px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .btn-primary {
+      background: var(--cyan);
+      color: #000;
+      box-shadow: 0 4px 16px var(--cyan-glow);
+    }
+    .btn-primary:hover {
+      opacity: 0.92;
+      transform: translateY(-1px);
+    }
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: var(--cyan);
+    }
+    .unavailable-box {
+      text-align: center;
+      padding: 40px 20px;
+    }
+    .unavailable-icon {
+      font-size: 3rem;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+    .unavailable-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+    .unavailable-desc {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 24px;
+    }
+    footer {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+      padding-top: 20px;
+      margin-top: 28px;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    footer a {
+      color: var(--cyan);
+      text-decoration: none;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="appRoot">
+    <!-- Populated dynamically based on URL -->
+  </div>
+
+  <script>
+    // Public Seed Catalog for Web Fallback
+    const PUBLIC_MEME_CATALOG = {
+      "meme_001": {
+        id: "meme_001",
+        caption: "When you finally push code after 3 days of debugging 🎉",
+        creator: "tech_humor",
+        category: "tech",
+        imageUrl: "https://picsum.photos/seed/meme001/800/600",
+        tags: ["coding", "programmer", "debug"],
+        artifactCode: "M/MEME_001",
+        status: "published"
+      },
+      "meme_002": {
+        id: "meme_002",
+        caption: "My dog every time I open the fridge 🐕",
+        creator: "lolcats_fan",
+        category: "animals",
+        imageUrl: "https://picsum.photos/seed/meme002/800/600",
+        tags: ["dog", "food", "pets"],
+        artifactCode: "M/MEME_002",
+        status: "published"
+      },
+      "meme_003": {
+        id: "meme_003",
+        caption: "Trying to explain offside rule to my grandma ⚽",
+        creator: "sports_funny",
+        category: "sports",
+        imageUrl: "https://picsum.photos/seed/meme003/800/600",
+        tags: ["football", "soccer", "grandma"],
+        artifactCode: "M/MEME_003",
+        status: "published"
+      },
+      "meme_hidden_001": {
+        id: "meme_hidden_001",
+        status: "hidden",
+        moderationReason: "Pending review under Community Guidelines"
+      },
+      "meme_removed_001": {
+        id: "meme_removed_001",
+        status: "removed",
+        moderationReason: "Removed for policy violation"
+      }
+    };
+
+    function resolveMemeId() {
+      // 1. From path: e.g. /meme/meme_001
+      const pathParts = window.location.pathname.split('/').filter(Boolean);
+      const memeIdx = pathParts.indexOf('meme');
+      if (memeIdx !== -1 && pathParts[memeIdx + 1]) {
+        return pathParts[memeIdx + 1].trim();
+      }
+      // 2. From search params: ?id=meme_001
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('id')) {
+        return params.get('id').trim();
+      }
+      // 3. Fallback to last segment if on /meme/*
+      if (pathParts.length > 0 && pathParts[pathParts.length - 1] !== 'index.html') {
+        return pathParts[pathParts.length - 1].trim();
+      }
+      return null;
+    }
+
+    function renderView() {
+      const root = document.getElementById('appRoot');
+      const memeId = resolveMemeId();
+
+      if (!memeId || memeId === 'meme') {
+        // Portal Root View
+        root.innerHTML = `
+          <div class="badge">SYS: MEME_ROUTER // V1.0.0</div>
+          <h1 style="margin: 0 0 12px 0; color: #fff;">MemeApp Public Share Portal</h1>
+          <p style="color: var(--text-muted); margin-bottom: 24px;">View, discover, and share memes from MemeApp across devices.</p>
+          <div class="actions">
+            <a class="btn btn-primary" href="index.html">Open Public Web Portal</a>
+            <a class="btn btn-secondary" href="https://play.google.com/store/apps/details?id=com.futurenostalgia.memeapp">Get MemeApp for Android</a>
+          </div>
+          ${renderFooter()}
+        `;
+        return;
+      }
+
+      const meme = PUBLIC_MEME_CATALOG[memeId];
+
+      if (!meme) {
+        // Unknown ID -> Branded unavailable state
+        document.getElementById('pageTitle').textContent = `Meme Not Found — MemeApp`;
+        root.innerHTML = `
+          <div class="unavailable-box">
+            <span class="badge badge-error">ERR_404 // M/NONEXIST</span>
+            <div class="unavailable-icon">📂</div>
+            <div class="unavailable-title">Meme Not Found</div>
+            <div class="unavailable-desc">The artifact code <code>${escapeHtml(memeId)}</code> does not exist or may have been deleted.</div>
+            <div class="actions">
+              <a class="btn btn-primary" href="https://tejuanne-alt.github.io/">Explore MemeApp Portal</a>
+              <a class="btn btn-secondary" href="https://play.google.com/store/apps/details?id=com.futurenostalgia.memeapp">Download App</a>
+            </div>
+          </div>
+          ${renderFooter()}
+        `;
+        return;
+      }
+
+      // Check moderation / draft status (Do not reveal draft or moderated content)
+      if (meme.status === 'hidden' || meme.status === 'removed' || meme.status === 'draft') {
+        document.getElementById('pageTitle').textContent = `Content Unavailable — MemeApp`;
+        root.innerHTML = `
+          <div class="unavailable-box">
+            <span class="badge badge-error">FILTER // CONTENT_UNAVAILABLE</span>
+            <div class="unavailable-icon">🛡️</div>
+            <div class="unavailable-title">Content Unavailable</div>
+            <div class="unavailable-desc">This artifact is unavailable or has been removed under MemeApp Community Guidelines.</div>
+            <div class="actions">
+              <a class="btn btn-primary" href="https://tejuanne-alt.github.io/">Return to Portal</a>
+              <a class="btn btn-secondary" href="community-guidelines.html">Review Community Guidelines</a>
+            </div>
+          </div>
+          ${renderFooter()}
+        `;
+        return;
+      }
+
+      // Valid Published Meme
+      document.getElementById('pageTitle').textContent = `@${meme.creator}: "${meme.caption}" — MemeApp`;
+      const appDeepLink = `intent://tejuanne-alt.github.io/meme/${meme.id}#Intent;scheme=https;package=com.futurenostalgia.memeapp;end`;
+      const fallbackDeepLink = `memeapp://meme/${meme.id}`;
+
+      root.innerHTML = `
+        <div class="header-row">
+          <span class="badge">ARTIFACT // ${meme.artifactCode}</span>
+          <span class="creator-tag">@${escapeHtml(meme.creator)}</span>
+        </div>
+
+        <div class="meme-image-container">
+          <img class="meme-image" src="${meme.imageUrl}" alt="${escapeHtml(meme.caption)}">
+        </div>
+
+        <div class="caption-text">${escapeHtml(meme.caption)}</div>
+
+        <div class="tags-row">
+          ${meme.tags.map(t => `<span class="tag-pill">#${escapeHtml(t)}</span>`).join('')}
+        </div>
+
+        <div class="actions">
+          <a class="btn btn-primary" href="${appDeepLink}">Open in MemeApp</a>
+          <a class="btn btn-secondary" href="https://play.google.com/store/apps/details?id=com.futurenostalgia.memeapp">Get MemeApp for Android</a>
+        </div>
+
+        ${renderFooter()}
+      `;
+    }
+
+    function renderFooter() {
+      return `
+        <footer>
+          <a href="privacy-policy.html">Privacy</a>
+          <a href="terms.html">Terms</a>
+          <a href="community-guidelines.html">Guidelines</a>
+          <a href="support.html">Support</a>
+        </footer>
+      `;
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    renderView();
+  </script>
+</body>
+</html>
