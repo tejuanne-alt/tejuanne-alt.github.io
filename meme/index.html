@@ -242,10 +242,47 @@
       if (pathParts.length > 0 && pathParts[pathParts.length - 1] !== 'index.html') {
         return pathParts[pathParts.length - 1].trim();
       }
-      return null;
+    async function fetchLiveMeme(memeId) {
+      const cfg = window.MEMEAPP_CONFIG || {
+        supabaseUrl: localStorage.getItem('MEMEAPP_SUPABASE_URL') || '',
+        anonKey: localStorage.getItem('MEMEAPP_SUPABASE_ANON_KEY') || ''
+      };
+
+      if (!cfg.supabaseUrl || !cfg.anonKey) {
+        return null; // Fall back to catalog if no live config
+      }
+
+      try {
+        const endpoint = `${cfg.supabaseUrl.replace(/\/+$/, '')}/rest/v1/memes?id=eq.${encodeURIComponent(memeId)}&select=id,caption,status,image_path,like_count,save_count,created_at,profiles(username)`;
+        const res = await fetch(endpoint, {
+          headers: {
+            'apikey': cfg.anonKey,
+            'Authorization': `Bearer ${cfg.anonKey}`
+          }
+        });
+        if (!res.ok) return null;
+        const data = await res.json();
+        if (!Array.isArray(data) || data.length === 0) {
+          // Under Supabase RLS, non-published memes (hidden/removed/draft) return 0 rows to anonymous users.
+          return { status: 'unavailable_or_moderated' };
+        }
+        const row = data[0];
+        return {
+          id: row.id,
+          caption: row.caption || '',
+          creator: row.profiles?.username || 'anonymous',
+          status: row.status,
+          imageUrl: row.image_path ? `${cfg.supabaseUrl}/storage/v1/object/public/meme-media/${row.image_path}` : 'https://picsum.photos/seed/meme001/800/600',
+          tags: ['meme'],
+          artifactCode: `M/${(row.id || 'MEME').toUpperCase().slice(0, 10)}`
+        };
+      } catch (err) {
+        console.warn('Live Supabase query failed:', err);
+        return null;
+      }
     }
 
-    function renderView() {
+    async function renderView() {
       const root = document.getElementById('appRoot');
       const memeId = resolveMemeId();
 
@@ -264,7 +301,19 @@
         return;
       }
 
-      const meme = PUBLIC_MEME_CATALOG[memeId];
+      // Check live database state first if configured
+      const liveMeme = await fetchLiveMeme(memeId);
+      let meme = liveMeme;
+
+      if (liveMeme && liveMeme.status === 'unavailable_or_moderated') {
+        // Database returned 0 rows for anonymous query -> Meme is either moderated (hidden/removed/draft) or non-existent
+        renderUnavailable(root);
+        return;
+      }
+
+      if (!meme) {
+        meme = PUBLIC_MEME_CATALOG[memeId];
+      }
 
       if (!meme) {
         // Unknown ID -> Branded unavailable state
@@ -287,20 +336,7 @@
 
       // Check moderation / draft status (Do not reveal draft or moderated content)
       if (meme.status === 'hidden' || meme.status === 'removed' || meme.status === 'draft') {
-        document.getElementById('pageTitle').textContent = `Content Unavailable — MemeApp`;
-        root.innerHTML = `
-          <div class="unavailable-box">
-            <span class="badge badge-error">FILTER // CONTENT_UNAVAILABLE</span>
-            <div class="unavailable-icon">🛡️</div>
-            <div class="unavailable-title">Content Unavailable</div>
-            <div class="unavailable-desc">This artifact is unavailable or has been removed under MemeApp Community Guidelines.</div>
-            <div class="actions">
-              <a class="btn btn-primary" href="https://tejuanne-alt.github.io/">Return to Portal</a>
-              <a class="btn btn-secondary" href="community-guidelines.html">Review Community Guidelines</a>
-            </div>
-          </div>
-          ${renderFooter()}
-        `;
+        renderUnavailable(root);
         return;
       }
 
@@ -330,6 +366,20 @@
           <a class="btn btn-secondary" href="https://play.google.com/store/apps/details?id=com.futurenostalgia.memeapp">Get MemeApp for Android</a>
         </div>
 
+        ${renderFooter()}
+    function renderUnavailable(root) {
+      document.getElementById('pageTitle').textContent = `Content Unavailable — MemeApp`;
+      root.innerHTML = `
+        <div class="unavailable-box">
+          <span class="badge badge-error">FILTER // CONTENT_UNAVAILABLE</span>
+          <div class="unavailable-icon">🛡️</div>
+          <div class="unavailable-title">Content Unavailable</div>
+          <div class="unavailable-desc">This artifact is unavailable or has been removed under MemeApp Community Guidelines.</div>
+          <div class="actions">
+            <a class="btn btn-primary" href="https://tejuanne-alt.github.io/">Return to Portal</a>
+            <a class="btn btn-secondary" href="community-guidelines.html">Review Community Guidelines</a>
+          </div>
+        </div>
         ${renderFooter()}
       `;
     }
